@@ -1,0 +1,51 @@
+﻿{% extends "base.html" %}
+{% block title %}创建题目{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">创建新题目</h2>
+<div class="card">
+    <form method="post">
+        <label>题目标题 <span style="color:red;">*</span></label>
+        <input name="title" placeholder="例如：A + B 问题" required>
+
+        <label>题目描述 <span style="color:red;">*</span></label>
+        <textarea name="description" rows="6" placeholder="题目描述，支持纯文本" required></textarea>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>输入格式说明</label>
+                <textarea name="input_format" rows="3" placeholder="输入格式"></textarea>
+            </div>
+            <div class="flex-1">
+                <label>输出格式说明</label>
+                <textarea name="output_format" rows="3" placeholder="输出格式"></textarea>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>样例输入</label>
+                <textarea name="sample_input" rows="4" class="mono" placeholder="1 2"></textarea>
+            </div>
+            <div class="flex-1">
+                <label>样例输出</label>
+                <textarea name="sample_output" rows="4" class="mono" placeholder="3"></textarea>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>时间限制 (ms)</label>
+                <input name="time_limit" type="number" value="1000">
+            </div>
+            <div class="flex-1">
+                <label>内存限制 (KB)</label>
+                <input name="memory_limit" type="number" value="65536">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-16">创建题目</button>
+        <a href="{{ url_for('manage_problems') }}" class="btn mt-16" style="background:#aaa;color:white;">取消</a>
+    </form>
+</div>
+<p class="text-sm text-muted mt-16">提示：创建题目后可在"题目管理"中添加测试数据。</p>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}帖子详情{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+            {% if post.is_pinned %}<span style="background:#f39c12;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;margin-right:8px;">置顶</span>{% endif %}
+            <a href="{{ url_for('forum_user', uid=post.user_id) }}" style="font-weight:600;color:#4361ee;text-decoration:none;font-size:16px;">{{ post.nickname }}</a>
+            <span class="text-muted">@{{ post.username }}</span>
+        </div>
+        <span class="text-sm text-muted">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+    </div>
+    <div style="white-space:pre-wrap;line-height:1.8;font-size:15px;">{{ post.content }}</div>
+    {% if post.image_url %}
+    <div style="margin-top:12px;"><img src="{{ post.image_url }}" style="max-width:100%;border-radius:6px;" onerror="this.style.display='none'" alt="图片"></div>
+    {% endif %}
+    {% if post.video_url %}
+    <div style="margin-top:12px;"><video src="{{ post.video_url }}" controls style="max-width:100%;border-radius:6px;" onerror="this.style.display='none'">您的浏览器不支持视频播放</video></div>
+    {% endif %}
+</div>
+<a href="{{ url_for('forum') }}" class="btn" style="background:#aaa;color:white;">返回论坛</a>
+{% endblock %}

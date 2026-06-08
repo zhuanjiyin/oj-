@@ -1,0 +1,60 @@
+﻿{% extends "base.html" %}
+{% block title %}提交 #{{ sub.id }}{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:8px;">提交详情 #{{ sub.id }}</h2>
+<div class="card">
+    <div class="flex text-sm">
+        <div><strong>题目:</strong> {{ sub.title }}</div>
+        <div><strong>用户:</strong> {{ sub.username }}</div>
+        <div><strong>语言:</strong> {{ sub.language }}</div>
+        <div><strong>状态:</strong>
+            {% set cls = 'status-Accepted' if sub.status == 'Accepted' else ('status-Compile' if sub.status == 'Compile Error' else ('status-Wrong' if sub.status == 'Wrong Answer' else 'status-Pending')) %}
+            <span class="status-badge {{ cls }}">{{ sub.status }}</span>
+        </div>
+        <div><strong>通过:</strong> {{ sub.score }}/{{ sub.test_total }}</div>
+    </div>
+    <div class="flex text-sm mt-16">
+        <div><strong>运行时间:</strong> {{ sub.time_used or '-' }} ms</div>
+        <div><strong>内存:</strong> {{ sub.memory_used or '-' }} KB</div>
+        <div><strong>提交时间:</strong> {{ sub.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+    </div>
+</div>
+
+{% if sub.compile_error %}
+<div class="card">
+    <h3 style="color:#e74c3c; margin-bottom:8px;">编译错误</h3>
+    <pre class="mono" style="background:#fff5f5; padding:12px; border-radius:6px; overflow-x:auto; max-height:300px;">{{ sub.compile_error }}</pre>
+</div>
+{% endif %}
+
+{% if sub.detail %}
+<div class="card">
+    <h3 style="margin-bottom:12px;">测试点详情</h3>
+    <table>
+        <thead><tr><th>#</th><th>状态</th><th>时间</th><th>内存</th><th>信息</th></tr></thead>
+        <tbody>
+            {% set details = sub.detail if sub.detail is iterable and sub.detail is not string else (sub.detail|fromjson if sub.detail is string else []) %}
+            {% for d in details %}
+            <tr>
+                <td>{{ d.case_id }}</td>
+                <td>
+                    {% set dcls = 'status-Accepted' if d.status == 'Accepted' else 'status-Wrong' %}
+                    <span class="status-badge {{ dcls }}">{{ d.status }}</span>
+                </td>
+                <td>{{ d.time_ms }} ms</td>
+                <td>{{ d.memory_kb }} KB</td>
+                <td style="font-size:12px;">{{ d.error_msg }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="card">
+    <h3 style="margin-bottom:8px;">源代码</h3>
+    <pre class="mono" style="background:#f8f9fa; padding:16px; border-radius:6px; overflow-x:auto; max-height:400px; font-size:13px; line-height:1.6;">{{ sub.code }}</pre>
+</div>
+
+<a href="javascript:history.back()" class="btn mt-16" style="background:#aaa;color:white;">返回</a>
+{% endblock %}

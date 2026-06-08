@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}登录 - OJ判题平台{% endblock %}
+{% block content %}
+<div style="max-width: 400px; margin: 80px auto;">
+    <div class="card">
+        <h2 style="text-align:center; margin-bottom:24px; color:#1a1a2e;">&#9889; OJ 判题平台</h2>
+        <form method="post">
+            <label>用户名</label>
+            <input name="username" placeholder="请输入用户名" required>
+            <label>密码</label>
+            <input name="password" type="password" placeholder="请输入密码" required>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">登 录</button>
+        </form>
+        <p class="text-sm text-muted text-center mt-16">
+            没有账号？<a href="{{ url_for('register') }}">注册学生账号</a> &nbsp;|&nbsp;
+            管理员: admin / admin123 &nbsp;|&nbsp; 学生: student1 / 123456
+        </p>
+    </div>
+</div>
+{% endblock %}

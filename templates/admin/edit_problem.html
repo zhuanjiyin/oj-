@@ -1,0 +1,50 @@
+﻿{% extends "base.html" %}
+{% block title %}编辑题目 - {{ problem.title }}{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">编辑题目 #{{ problem.id }}</h2>
+<div class="card">
+    <form method="post">
+        <label>题目标题 <span style="color:red;">*</span></label>
+        <input name="title" value="{{ problem.title }}" required>
+
+        <label>题目描述 <span style="color:red;">*</span></label>
+        <textarea name="description" rows="6" required>{{ problem.description }}</textarea>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>输入格式说明</label>
+                <textarea name="input_format" rows="3">{{ problem.input_format or '' }}</textarea>
+            </div>
+            <div class="flex-1">
+                <label>输出格式说明</label>
+                <textarea name="output_format" rows="3">{{ problem.output_format or '' }}</textarea>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>样例输入</label>
+                <textarea name="sample_input" rows="4" class="mono">{{ problem.sample_input or '' }}</textarea>
+            </div>
+            <div class="flex-1">
+                <label>样例输出</label>
+                <textarea name="sample_output" rows="4" class="mono">{{ problem.sample_output or '' }}</textarea>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>时间限制 (ms)</label>
+                <input name="time_limit" type="number" value="{{ problem.time_limit }}">
+            </div>
+            <div class="flex-1">
+                <label>内存限制 (KB)</label>
+                <input name="memory_limit" type="number" value="{{ problem.memory_limit }}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-16">保存修改</button>
+        <a href="{{ url_for('manage_problems') }}" class="btn mt-16" style="background:#aaa;color:white;">取消</a>
+    </form>
+</div>
+{% endblock %}

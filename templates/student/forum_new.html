@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}发布新帖{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">发布新帖</h2>
+<div class="card">
+    <form method="post" enctype="multipart/form-data">
+        <label>内容 <span style="color:#e74c3c;">*</span></label>
+        <textarea name="content" placeholder="分享你的想法..." required style="min-height:120px;"></textarea>
+
+        <label>上传图片（可选，支持 jpg/png/gif/bmp）</label>
+        <input type="file" name="image" accept="image/*" style="padding:6px;">
+
+        <label>上传视频（可选，支持 mp4/webm/avi/mov）</label>
+        <input type="file" name="video" accept="video/*" style="padding:6px;">
+
+        <div class="flex mt-16">
+            <button type="submit" class="btn btn-primary">发布帖子</button>
+            <a href="{{ url_for('forum') }}" class="btn" style="background:#aaa;color:white;">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

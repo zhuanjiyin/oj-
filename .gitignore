@@ -1,0 +1,5 @@
+﻿__pycache__/
+judge/work/
+static/uploads/*
+!static/uploads/.gitkeep
+*.pyc

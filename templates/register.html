@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}注册 - OJ判题平台{% endblock %}
+{% block content %}
+<div style="max-width: 400px; margin: 80px auto;">
+    <div class="card">
+        <h2 style="text-align:center; margin-bottom:24px; color:#1a1a2e;">学生注册</h2>
+        <form method="post" onsubmit="return validateForm()">
+            <label>用户名</label>
+            <input name="username" id="username" placeholder="3-20位字母或数字" required pattern="[a-zA-Z0-9]{3,20}" title="3-20位字母或数字">
+
+            <label>昵称（可选）</label>
+            <input name="nickname" id="nickname" placeholder="显示名称，不填则同用户名">
+
+            <label>密码</label>
+            <input name="password" id="password" type="password" placeholder="至少6位" required minlength="6">
+
+            <label>确认密码</label>
+            <input name="confirm" id="confirm" type="password" placeholder="再次输入密码" required minlength="6">
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">注 册</button>
+        </form>
+        <p class="text-sm text-muted text-center mt-16">
+            已有账号？<a href="{{ url_for('login') }}">返回登录</a>
+        </p>
+    </div>
+</div>
+<script>
+function validateForm() {
+    var p1 = document.getElementById('password').value;
+    var p2 = document.getElementById('confirm').value;
+    if (p1 !== p2) {
+        alert('两次输入的密码不一致！');
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}

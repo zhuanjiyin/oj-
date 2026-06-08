@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}论坛{% endblock %}
+{% block content %}
+<div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2 style="margin:0;">论坛</h2>
+    <a href="{{ url_for('forum_new') }}" class="btn btn-primary">+ 发布新帖</a>
+</div>
+
+<div class="card">
+    <form method="get" class="flex">
+        <input name="search" placeholder="输入用户ID搜索帖子..." style="flex:1;margin-bottom:0;" value="{{ request.args.get('search', '') }}">
+        <button type="submit" class="btn btn-primary">搜索</button>
+        {% if request.args.get('search') %}
+        <a href="{{ url_for('forum') }}" class="btn" style="background:#aaa;color:white;">清除</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if posts %}
+{% for p in posts %}
+<div class="card" style="{% if p.is_pinned %}border-left:4px solid #f39c12;{% endif %}">
+    <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+            {% if p.is_pinned %}<span style="background:#f39c12;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;margin-right:8px;">置顶</span>{% endif %}
+            <a href="{{ url_for('forum_user', uid=p.uid) }}" style="font-weight:600;color:#4361ee;text-decoration:none;">{{ p.nickname }}</a>
+            <span class="text-sm text-muted">@{{ p.username }}</span>
+            <span class="text-sm text-muted" style="margin-left:12px;">{{ p.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        </div>
+        {% if session.role == 'admin' %}
+        <div>
+            <form method="post" action="{{ url_for('forum_pin', pid=p.id) }}" style="display:inline;">
+                <button class="btn btn-sm" style="background:#f39c12;color:white;">{{ '取消置顶' if p.is_pinned else '置顶' }}</button>
+            </form>
+            <form method="post" action="{{ url_for('forum_delete', pid=p.id) }}" style="display:inline;" onsubmit="return confirm('确定删除此帖？')">
+                <button class="btn btn-sm btn-danger">删除</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <div style="white-space:pre-wrap;line-height:1.8;margin-bottom:8px;">{{ p.content }}</div>
+    {% if p.image_url %}
+    <div style="margin-top:8px;">
+        <img src="{{ p.image_url }}" style="max-width:100%;max-height:300px;border-radius:6px;" onerror="this.style.display='none'" alt="图片">
+    </div>
+    {% endif %}
+    {% if p.video_url %}
+    <div style="margin-top:8px;">
+        <video src="{{ p.video_url }}" controls style="max-width:100%;max-height:300px;border-radius:6px;" onerror="this.style.display='none'">您的浏览器不支持视频播放</video>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无帖子</p></div>
+{% endif %}
+{% endblock %}

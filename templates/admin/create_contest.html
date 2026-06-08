@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}创建比赛{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">创建比赛</h2>
+<div class="card">
+    <form method="post">
+        <label>比赛名称 <span style="color:#e74c3c;">*</span></label>
+        <input name="title" placeholder="例如：2026年ACM新生赛" required>
+
+        <label>比赛描述（可选）</label>
+        <textarea name="description" placeholder="比赛规则说明..." style="min-height:60px;"></textarea>
+
+        <div class="flex">
+            <div class="flex-1">
+                <label>开始时间 <span style="color:#e74c3c;">*</span></label>
+                <input type="datetime-local" name="start_time" required>
+            </div>
+            <div class="flex-1">
+                <label>结束时间 <span style="color:#e74c3c;">*</span></label>
+                <input type="datetime-local" name="end_time" required>
+            </div>
+        </div>
+
+        <label style="margin-top:16px;">选择题目（可多选，按住 Ctrl 点击）</label>
+        <select name="problem_ids" multiple style="min-height:150px;">
+            {% for p in problems %}
+            <option value="{{ p.id }}">{{ p.id }}. {{ p.title }}</option>
+            {% endfor %}
+        </select>
+        <p class="text-sm text-muted" style="margin-top:4px;">提示：也可先空着，创建比赛后再从题目列表里选。新建题目请到<a href="{{ url_for('create_problem') }}" target="_blank">题目管理</a>。</p>
+
+        <button type="submit" class="btn btn-primary mt-16">创建比赛</button>
+        <a href="{{ url_for('contest_list') }}" class="btn mt-16" style="background:#aaa;color:white;">取消</a>
+    </form>
+</div>
+{% endblock %}

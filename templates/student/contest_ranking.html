@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}比赛排名 - {{ contest.title }}{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:4px;">{{ contest.title }} - 排名</h2>
+<p class="text-sm text-muted mb-16">ACM赛制：按过题数降序，过题数相同按罚时升序（罚时=首次AC时间-比赛开始时间+错误次数x20分钟）</p>
+
+{% if rankings %}
+<table class="card" style="padding:0;">
+    <thead>
+        <tr><th>排名</th><th>用户</th><th>昵称</th><th>过题数</th><th>罚时</th></tr>
+    </thead>
+    <tbody>
+        {% for r in rankings %}
+        <tr style="{% if r.username == session.username %}background:#e8f5e9;{% endif %}">
+            <td><strong>#{{ loop.index }}</strong></td>
+            <td>{{ r.username }}</td>
+            <td>{{ r.nickname }}</td>
+            <td style="color:#2ecc71;font-weight:600;">{{ r.solved }}</td>
+            <td>
+                {% set mm = (r.penalty // 60) %}
+                {% set ss = (r.penalty % 60) %}
+                {{ '%02d:%02d'|format(mm, ss) }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无参赛者</p></div>
+{% endif %}
+
+<div class="flex mt-16">
+    <a href="{{ url_for('contest_detail', cid=contest.id) }}" class="btn btn-primary">返回比赛</a>
+    <a href="{{ url_for('contest_list') }}" class="btn" style="background:#aaa;color:white;">比赛列表</a>
+</div>
+{% endblock %}

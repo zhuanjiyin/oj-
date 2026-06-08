@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}题目列表{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">题目列表</h2>
+{% if problems %}
+<table class="card" style="padding:0;">
+    <thead>
+        <tr><th>ID</th><th>标题</th><th>时间限制</th><th>内存限制</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+        {% for p in problems %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.title }}</td>
+            <td>{{ p.time_limit }} ms</td>
+            <td>{{ p.memory_limit }} KB</td>
+            <td><a href="{{ url_for('problem_detail', pid=p.id) }}" class="btn btn-primary btn-sm">进入</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无题目</p></div>
+{% endif %}
+
+<h3 style="margin-top:32px; margin-bottom:16px;">最近提交</h3>
+{% if submissions %}
+<table class="card" style="padding:0;">
+    <thead>
+        <tr><th>ID</th><th>题目</th><th>状态</th><th>通过</th><th>提交时间</th></tr>
+    </thead>
+    <tbody>
+        {% for s in submissions %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.title }}</td>
+            <td>
+                {% set cls = 'status-Accepted' if s.status == 'Accepted' else ('status-Compile' if s.status == 'Compile Error' else ('status-Wrong' if s.status == 'Wrong Answer' else 'status-Pending')) %}
+                <span class="status-badge {{ cls }}">{{ s.status }}</span>
+            </td>
+            <td>{{ s.score }}/{{ s.test_total }}</td>
+            <td class="text-sm text-muted">{{ s.submitted_at.strftime('%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无提交</p></div>
+{% endif %}
+{% endblock %}

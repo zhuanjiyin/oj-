@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}比赛列表{% endblock %}
+{% block content %}
+<div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2 style="margin:0;">比赛</h2>
+    {% if session.role == 'admin' %}
+    <a href="{{ url_for('contest_create') }}" class="btn btn-primary">+ 创建比赛</a>
+    {% endif %}
+</div>
+{% if contests %}
+{% for c in contests %}
+{% set ns = namespace(status='') %}
+{% if c.start_time <= now() <= c.end_time %}{% set ns.status = 'running' %}
+{% elif now() < c.start_time %}{% set ns.status = 'upcoming' %}
+{% else %}{% set ns.status = 'ended' %}{% endif %}
+<div class="card" style="{% if ns.status=='running' %}border-left:4px solid #2ecc71;{% elif ns.status=='upcoming' %}border-left:4px solid #4361ee;{% else %}border-left:4px solid #aaa;{% endif %}">
+    <div class="flex" style="justify-content:space-between;align-items:center;">
+        <div>
+            <h3 style="margin:0;">{{ c.title }}</h3>
+            <p class="text-sm text-muted" style="margin:4px 0;">
+                开始: {{ c.start_time.strftime('%Y-%m-%d %H:%M') }} |
+                结束: {{ c.end_time.strftime('%Y-%m-%d %H:%M') }} |
+                创建者: {{ c.creator_name }} |
+                报名: {{ c.reg_count }}人
+            </p>
+        </div>
+        <div>
+            <span style="padding:4px 12px;border-radius:12px;font-size:13px;background:{% if ns.status=='running' %}#d4edda;color:#155724{% elif ns.status=='upcoming' %}#cce5ff;color:#004085{% else %}#e2e3e5;color:#383d41{% endif %};">
+                {{ '进行中' if ns.status=='running' else ('即将开始' if ns.status=='upcoming' else '已结束') }}
+            </span>
+        </div>
+    </div>
+    <div style="margin-top:12px;">
+        <a href="{{ url_for('contest_detail', cid=c.id) }}" class="btn btn-primary btn-sm">进入比赛</a>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无比赛</p></div>
+{% endif %}
+{% endblock %}

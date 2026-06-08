@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ contest.title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="flex" style="justify-content:space-between;align-items:flex-start;">
+        <div>
+            <h2>{{ contest.title }}</h2>
+            <p class="text-sm text-muted" style="margin:4px 0;">
+                开始: {{ contest.start_time.strftime('%Y-%m-%d %H:%M') }} |
+                结束: {{ contest.end_time.strftime('%Y-%m-%d %H:%M') }} |
+                创建者: {{ contest.creator_name }} |
+                已报名: {{ reg_count }}人
+            </p>
+        </div>
+        <div>
+            {% set ns = namespace(status='') %}
+            {% if is_running %}{% set ns.status = 'running' %}{% elif is_ended %}{% set ns.status = 'ended' %}{% else %}{% set ns.status = 'upcoming' %}{% endif %}
+            <span style="padding:4px 12px;border-radius:12px;font-size:14px;background:{% if ns.status=='running' %}#d4edda;color:#155724{% elif ns.status=='upcoming' %}#cce5ff;color:#004085{% else %}#e2e3e5;color:#383d41{% endif %};">
+                {{ '进行中' if ns.status=='running' else ('即将开始' if ns.status=='upcoming' else '已结束') }}
+            </span>
+        </div>
+    </div>
+
+    {% if can_register %}
+    <form method="post" action="{{ url_for('contest_register', cid=contest.id) }}" style="margin-top:16px;">
+        <button type="submit" class="btn btn-success">立即报名</button>
+    </form>
+    {% elif is_registered and not is_running and not is_ended %}
+    <span class="btn btn-sm" style="background:#aaa;color:white;cursor:default;margin-top:16px;">已报名，等待比赛开始</span>
+    {% endif %}
+</div>
+
+{% if is_running and (is_registered or session.role == 'admin') %}
+<div class="flex" style="margin-top:16px;gap:16px;">
+    <div class="flex-1">
+        {% if contest.description %}
+        <div class="card" style="margin-bottom:12px;">
+            <h3 style="margin-bottom:8px;">比赛简介</h3>
+            <div style="white-space:pre-wrap;line-height:1.8;">{{ contest.description }}</div>
+        </div>
+        {% endif %}
+
+        <h3 style="margin-bottom:12px;">比赛题目</h3>
+        {% if problems %}
+        {% for p in problems %}
+        <div class="card" style="margin-bottom:8px;">
+            <div class="flex" style="justify-content:space-between;align-items:center;">
+                <div>
+                    <strong>{{ p.title }}</strong>
+                    <span class="text-sm text-muted" style="margin-left:8px;">时限: {{ p.time_limit }}ms | 内存: {{ p.memory_limit }}KB</span>
+                </div>
+                <a href="{{ url_for('contest_problem', cid=contest.id, pid=p.id) }}" class="btn btn-primary btn-sm">做题</a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="card"><p class="text-muted">暂无题目</p></div>
+        {% endif %}
+    </div>
+    <div style="width:280px;flex-shrink:0;">
+        <div class="card" style="text-align:center;">
+            <h3 style="font-size:24px;color:#2ecc71;">{{ reg_count }}</h3>
+            <p class="text-muted">已报名人数</p>
+        </div>
+        <a href="{{ url_for('contest_ranking', cid=contest.id) }}" class="btn mt-16" style="display:block;text-align:center;background:#f39c12;color:white;font-size:16px;padding:12px;">查看实时排名</a>
+    </div>
+</div>
+{% elif not is_running and not is_ended %}
+<div class="card" style="margin-top:16px;">
+    {% if contest.description %}
+    <h3 style="margin-bottom:8px;">比赛简介</h3>
+    <div style="white-space:pre-wrap;line-height:1.8;margin-bottom:16px;">{{ contest.description }}</div>
+    <hr style="border:none;border-top:1px solid #e0e0e0;">
+    {% endif %}
+    <p class="text-muted text-center" style="font-size:16px;margin-top:12px;">题目将在比赛开始后显示</p>
+</div>
+{% elif is_ended and contest.description %}
+<div class="card" style="margin-top:16px;">
+    <h3 style="margin-bottom:8px;">比赛简介</h3>
+    <div style="white-space:pre-wrap;line-height:1.8;">{{ contest.description }}</div>
+</div>
+{% endif %}
+
+<a href="{{ url_for('contest_list') }}" class="btn mt-16" style="background:#aaa;color:white;">返回比赛列表</a>
+{% endblock %}

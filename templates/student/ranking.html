@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}成绩排名{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:20px;">学生成绩排名</h2>
+<p class="text-sm text-muted mb-16">按通过题数降序排列，通过题数相同时按通过率降序</p>
+{% if progress %}
+<table class="card" style="padding:0;">
+    <thead>
+        <tr><th>排名</th><th>用户</th><th>昵称</th><th>通过题数</th><th>总提交</th><th>通过率</th></tr>
+    </thead>
+    <tbody>
+        {% set rank = namespace(value=0) %}
+        {% for s in progress %}
+        {% set rank.value = rank.value + 1 %}
+        <tr>
+            <td><strong>#{{ rank.value }}</strong></td>
+            <td>{{ s.username }}</td>
+            <td>{{ s.nickname }}</td>
+            <td style="color:#4361ee;font-weight:600;">{{ s.problems_passed }}</td>
+            <td>{{ s.total_submissions }}</td>
+            <td>
+                <span style="color:{% if s.pass_rate >= 80 %}#2ecc71{% elif s.pass_rate >= 40 %}#f39c12{% else %}#e74c3c{% endif %};font-weight:600;">
+                    {{ s.pass_rate }}%
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card"><p class="text-muted text-center">暂无提交记录，开始刷题吧！</p></div>
+{% endif %}
+{% endblock %}
